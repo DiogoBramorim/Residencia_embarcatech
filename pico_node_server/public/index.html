@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dados do Joystick</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #dados {
+      font-size: 24px;
+      margin-top: 20px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dashboard - Joystick e Temperatura</h1>
+  <div id="dados">Carregando...</div>
+
+  <script>
+    function atualizarDados() {
+      fetch('/dados')
+        .then(res => res.text())
+        .then(dados => {
+          document.getElementById('dados').innerHTML = dados;
+        })
+        .catch(err => {
+          document.getElementById('dados').innerText = 'Erro ao buscar dados: ' + err;
+        });
+    }
+
+    setInterval(atualizarDados, 1000);
+    atualizarDados();
+  </script>
+</body>
+</html>
