@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Joystick e Sensor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .data {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #333;
+        }
+        .data h2 {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Joystick e Sensor</h1>
+    
+    <div class="data">
+        <h2>Temperatura Interna: <span id="temp">Carregando...</span> °C</h2>
+        <h2>Direção do Joystick: <span id="direction">Carregando...</span></h2>
+        <h2>Joystick (X, Y): <span id="xy">Carregando...</span></h2>
+        <h2>Botão Pressionado: <span id="button">Carregando...</span></h2>
+    </div>
+
+    <script>
+        // Função para atualizar os dados
+        function updateData() {
+            fetch('http://localhost:3000/dados')  // Requisição à API no servidor Node.js
+                .then(response => response.json())
+                .then(data => {
+                    // Atualiza os valores no HTML com os dados recebidos
+                    document.getElementById('temp').innerText = data.temp.toFixed(2);
+                    document.getElementById('direction').innerText = data.dir;
+                    document.getElementById('xy').innerText = `X: ${data.x} | Y: ${data.y}`;
+                    document.getElementById('button').innerText = data.button ? 'Pressionado' : 'Não Pressionado';
+                })
+                .catch(error => {
+                    console.error('Erro ao obter os dados:', error);
+                    // Exibe uma mensagem de erro caso algo dê errado
+                    document.getElementById('temp').innerText = 'Erro ao obter dados';
+                    document.getElementById('direction').innerText = 'Erro ao obter dados';
+                    document.getElementById('xy').innerText = 'Erro ao obter dados';
+                    document.getElementById('button').innerText = 'Erro ao obter dados';
+                });
+        }
+
+        // Atualiza os dados a cada 1 segundo (1000ms)
+        setInterval(updateData, 1000);
+    </script>
+</body>
+</html>
