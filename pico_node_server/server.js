@@ -1,17 +1,18 @@
 const net = require('net');
 const express = require('express');
 const path = require('path');
- 
+
 let ultimoDado = "Aguardando dados da placa...";
 
 // Conexão TCP com a Pico W
 const tcpClient = new net.Socket();
-tcpClient.connect(80, '192.168.1.28', () => {
+tcpClient.connect(80, '192.168.1.18', () => {
     console.log('Conectado à Raspberry Pi Pico W');
 });
 
 tcpClient.on('data', (data) => {
     ultimoDado = data.toString();
+    console.log('Recebido da Pico:', ultimoDado);
 });
 
 tcpClient.on('error', (err) => {
