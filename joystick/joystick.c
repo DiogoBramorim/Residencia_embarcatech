@@ -5,17 +5,16 @@
 
 #define PORTA_TCP 80
 #define TEMPO_ENVIO_MS 1000
-#define temperatura_pin 4
+// #define temperatura_pin 4
 
 static struct tcp_pcb *cliente_pcb = NULL;
 
-float read_temperature() {
-    adc_select_input(temperatura_pin);  // Seleciona o pino de entrada do sensor de temperatura
-    uint16_t raw_value = adc_read();    // Lê o valor bruto do ADC
-    const float conversion_factor = 3.3f / (1 << 12);  // Fator de conversão para 12 bits (4096 valores)
-    float voltage = raw_value * conversion_factor;  // Converte a leitura para a tensão
-    return  27.0f - ((voltage - 0.706f) / 0.001721f);
-}
+// float read_temperature() {
+//     adc_select_input(temperatura_pin);  // Seleciona o pino de entrada do sensor de temperatura
+//     uint16_t raw_value = adc_read();    // Lê o valor bruto do ADC
+//     const float conversion_factor = 3.3f / (1 << 12);  // Fator de conversão para 12 bits (4096 valores)
+//     return  27.0f - ((raw_value * conversion_factor) - 0.706f) / 0.001721f;
+// }
 // Função para formatar os dados do sensor
 void coletar_dados(char *buffer, size_t tamanho) {
     // Leitura dos eixos do joystick (X e Y)
@@ -28,12 +27,11 @@ void coletar_dados(char *buffer, size_t tamanho) {
     // Leitura do botão
     int botao = gpio_get(15);
     
-    // Leitura da temperatura
-    float temperatura = read_temperature();
-    
+    // // Leitura da temperatura
+    // float temperatura = read_temperature();
     snprintf(buffer, tamanho,
-             "Joystick X: %d\nJoystick Y: %d\nBotão: %d\nTemperatura: %.2f ºC\n",
-             x, y, botao, temperatura);
+             "Joystick X: %d\nJoystick Y: %d\n",
+             x, y);
 }
 
 // Função chamada quando o cliente se desconecta
@@ -94,8 +92,10 @@ int main() {
     }
 
     // Conectando ao Wi-Fi
-    const char *ssid = "ADRIANA ALVES";
-    const char *senha = "luanalves@1";
+    // const char *ssid = "ADRIANA ALVES";
+    // const char *senha = "luanalves@1";
+    const char *ssid = "IFPI_BLOCOJ2";
+    const char *senha = "ifpi2022@blocoj";
 
     printf("Conectando ao Wi-Fi...\n");
     cyw43_arch_enable_sta_mode();
@@ -109,8 +109,8 @@ int main() {
     adc_init();
     adc_gpio_init(26);  // Pino do eixo X
     adc_gpio_init(27);  // Pino do eixo Y
-    adc_gpio_init(28);  // Pino do eixo Z (se necessário)
-    adc_select_input(0);  // Exemplo: joystick X no ADC0
+    adc_gpio_init(28); 
+    adc_select_input(0);  
     gpio_init(15);
     gpio_set_dir(15, GPIO_IN);  // Configura pino para leitura de botão
 
