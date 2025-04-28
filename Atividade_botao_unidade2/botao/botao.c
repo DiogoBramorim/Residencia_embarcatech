@@ -86,10 +86,10 @@ int main() {
     }
 
     // Conectando ao Wi-Fi
-    // const char *ssid = "ADRIANA ALVES";
-    // const char *senha = "luanalves@1";
-    const char *ssid = "IFPI_BLOCOJ2";
-    const char *senha = "ifpi2022@blocoj";
+    const char *ssid = "ADRIANA ALVES";
+    const char *senha = "luanalves@1";
+    // const char *ssid = "IFPI_BLOCOJ2";
+    // const char *senha = "ifpi2022@blocoj";
 
     printf("Conectando ao Wi-Fi...\n");
     cyw43_arch_enable_sta_mode();

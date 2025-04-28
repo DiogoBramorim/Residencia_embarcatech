@@ -5,33 +5,51 @@
 
 #define PORTA_TCP 80
 #define TEMPO_ENVIO_MS 1000
-// #define temperatura_pin 4
+
+
 
 static struct tcp_pcb *cliente_pcb = NULL;
 
-// float read_temperature() {
-//     adc_select_input(temperatura_pin);  // Seleciona o pino de entrada do sensor de temperatura
-//     uint16_t raw_value = adc_read();    // Lê o valor bruto do ADC
-//     const float conversion_factor = 3.3f / (1 << 12);  // Fator de conversão para 12 bits (4096 valores)
-//     return  27.0f - ((raw_value * conversion_factor) - 0.706f) / 0.001721f;
-// }
+// Função para determinar a direção do joystick
+const char* determinar_direcao(int x, int y) {
+    const int DEADZONE = 1000; // zona morta para evitar ruído em torno do centro
+    const int MAX_ADC = 4095 / 2; // valor central aproximado
+
+    int deltaX = x - MAX_ADC;
+    int deltaY = y - MAX_ADC;
+
+    if (abs(deltaX) < DEADZONE && abs(deltaY) < DEADZONE) {
+        return "Centro";
+    } else if (abs(deltaX) < DEADZONE) {
+        return (deltaY > 0) ? "Sul" : "Norte";
+    } else if (abs(deltaY) < DEADZONE) {
+        return (deltaX > 0) ? "Leste" : "Oeste";
+    } else if (deltaX > 0 && deltaY > 0) {
+        return "Nordeste";
+    } else if (deltaX < 0 && deltaY > 0) {
+        return "Noroeste";
+    } else if (deltaX > 0 && deltaY < 0) {
+        return "Sudeste";
+    } else {
+        return "Sudoeste";
+    }
+}
+
 // Função para formatar os dados do sensor
 void coletar_dados(char *buffer, size_t tamanho) {
     // Leitura dos eixos do joystick (X e Y)
-    adc_select_input(1);  // Selecionando ADC0 para o eixo X 
-    int x = adc_read(); sleep_ms(5);
+    adc_select_input(1);  // Selecionando ADC1 para o eixo X 
+    int x = adc_read(); sleep_ms(3);
     
-    adc_select_input(0);  // Selecionando ADC1 para o eixo Y 
-    int y = adc_read(); sleep_ms(5);
-    
-    // Leitura do botão
-    int botao = gpio_get(15);
-    
-    // // Leitura da temperatura
-    // float temperatura = read_temperature();
+    adc_select_input(0);  // Selecionando ADC0 para o eixo Y 
+    int y = adc_read(); sleep_ms(3);
+
+    // Determinar a direção
+    const char* direcao = determinar_direcao(x, y);
+
     snprintf(buffer, tamanho,
-             "Joystick X: %d\nJoystick Y: %d\n",
-             x, y);
+             "Joystick X: %d\nJoystick Y: %d\nDirecao: %s\n",
+             x, y, direcao);
 }
 
 // Função chamada quando o cliente se desconecta

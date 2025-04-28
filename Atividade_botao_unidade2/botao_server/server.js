@@ -6,7 +6,7 @@ let ultimoDado = "Aguardando dados da placa...";
 
 // Conexão TCP com a Pico W
 const tcpClient = new net.Socket();
-tcpClient.connect(80, '10.9.131.54', () => {
+tcpClient.connect(80, '192.168.1.14', () => {
     console.log('Conectado à Raspberry Pi Pico W');
 });
 
